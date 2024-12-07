@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Team Website</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
+
+      nav {
+        background-color: #333;
+        padding: 10px;
+        margin-bottom: 20px;
+        position: sticky;
+        top: 0;
+      }
+
+      nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px;
+        margin: 0 5px;
+      }
+
+      nav a:hover {
+        background-color: #555;
+      }
+
+      .student-card {
+        background-color: white;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .course-list {
+        list-style-type: disc;
+        padding-left: 20px;
+        margin: 0.25rem 0;
+      }
+
+      .hobby-list {
+        list-style-type: circle;
+        padding-left: 20px;
+        margin: 0.25rem 0;
+      }
+
+      .email-link {
+        color: #0066cc;
+        text-decoration: none;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
+
+      .email-link:hover {
+        text-decoration: underline;
+        background-color: #f8f9fa;
+      }
+
+      .last-student {
+        padding-bottom: 5rem;
+        margin-bottom: 5rem;
+      }
+
+      #scroll-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #1a75ff;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: none;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+        font-size: 18px;
+        font-weight: bold;
+        border: 2px solid white;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="#student1">Razi</a>
+      <a href="#student2">Ahmad</a>
+      <a href="#student3">Abdullah</a>
+      <a href="#student4">Hanan</a>
+    </nav>
+
+    <div class="student-card" id="student1">
+      <h2>Razi Mograbi</h2>
+
+      <h3>Courses:</h3>
+      <ul class="course-list">
+        <li>Entrepreneurial Engineering - Lean Startup Approach</li>
+        <li>Laboratory in Data Analysis</li>
+        <li>Natural Language Processing with Deep Learning</li>
+        <li>Capstone Project - Phase B</li>
+        <li>Seminar in Learning Systems</li>
+        <li>Information Retrieval</li>
+        <li>Game Theory</li>
+        <li>Engineers for the Elderly</li>
+      </ul>
+
+      <h3>Hobbies:</h3>
+      <ul class="hobby-list">
+        <li>Kickboxing</li>
+        <li>Reading interesting books</li>
+        <li>Listening to music</li>
+      </ul>
+
+      <p>
+        <strong>Contact:</strong>
+        <a href="mailto:Razi.Mograbi@e.braude.ac.il" class="email-link"
+          >Razi.Mograbi@e.braude.ac.il</a
+        >
+      </p>
+    </div>
+
+    <div class="student-card" id="student2">
+      <h2>Ahmad Ataba</h2>
+
+      <h3>Courses:</h3>
+      <ul class="course-list">
+        <li>Information Security and Cryptology</li>
+        <li>Information Retrieval</li>
+        <li>Algorithms for Texts and Sequences</li>
+        <li>Data Compression</li>
+        <li>Philosophy of Science</li>
+        <li>Capstone Project, Stage A</li>
+        <li>Computer Networks</li>
+      </ul>
+      <h3>Hobbies:</h3>
+      <ul class="hobby-list">
+        <li>Video games</li>
+        <li>Gym</li>
+        <li>Cars</li>
+        <li>TV shows</li>
+        <li>MMA</li>
+      </ul>
+
+      <p>
+        <strong>Contact:</strong>
+        <a href="mailto:ahmad.ataba@e.braude.ac.il" class="email-link"
+          >ahmad.ataba@e.braude.ac.il</a
+        >
+      </p>
+    </div>
+
+    <div class="student-card" id="student3">
+      <h2>Abdullah Abo El-Hija</h2>
+
+      <h3>Courses:</h3>
+      <ul class="course-list">
+        <li>Pattern Matching</li>
+        <li>Capstone Project, Stage A</li>
+        <li>Information Retrieval</li>
+        <li>Blockchain</li>
+        <li>AI Ethics</li>
+      </ul>
+
+      <h3>Hobbies:</h3>
+      <ul class="hobby-list">
+        <li>Video games</li>
+        <li>Gym</li>
+      </ul>
+
+      <p>
+        <strong>Contact:</strong>
+        <a href="mailto:Abdullah.abo.el.hija@e.braude.ac.il" class="email-link"
+          >Abdullah.abo.el.hija@e.braude.ac.il</a
+        >
+      </p>
+    </div>
+
+    <div class="student-card last-student" id="student4">
+      <h2>Hanan Madi</h2>
+
+      <h3>Courses:</h3>
+      <ul class="course-list">
+        <li>Data Compression</li>
+        <li>Information Retrieval</li>
+        <li>Information Theory</li>
+        <li>Engineers for the Third Age</li>
+        <li>Capstone Project B</li>
+      </ul>
+
+      <h3>Hobbies:</h3>
+      <ul class="hobby-list">
+        <li>Reality Shows</li>
+        <li>Swimming</li>
+      </ul>
+
+      <p>
+        <strong>Contact:</strong>
+        <a href="mailto:hanan.x11@gmail.com" class="email-link"
+          >hanan.x11@gmail.com</a
+        >
+      </p>
+    </div>
+
+    <button id="scroll-top" onclick="scrollToTop()">↑ Top</button>
+
+    <script>
+      window.onscroll = function () {
+        if (
+          document.body.scrollTop > 20 ||
+          document.documentElement.scrollTop > 20
+        ) {
+          document.getElementById("scroll-top").style.display = "block";
+        } else {
+          document.getElementById("scroll-top").style.display = "none";
+        }
+      };
+
+      function scrollToTop() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+      }
+    </script>
+  </body>
+</html>
