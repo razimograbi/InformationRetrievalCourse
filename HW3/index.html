@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Urban Dictionary Search Project - Sections A-F</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #fefefe;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    section {
+      margin-bottom: 40px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #444;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 8px;
+    }
+
+    pre, code {
+      background: #f0f0f0;
+      padding: 3px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+
+    .answer-block {
+      margin-bottom: 15px;
+    }
+
+    .sub-header {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 30px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>404 Brain Not Found - Urban Dictionary Search Project</h1>
+
+  <!-- A. Interesting Technologies -->
+  <section id="sectionA">
+    <h2>A. List Various Interesting Technologies Used</h2>
+    <div class="answer-block">
+      <p><strong>1. Urban Dictionary API</strong>: We fetch data from the Urban Dictionary API, and then parse the JSON results in order to add them into our local cache.</p>
+      <p><strong>2. JSON Caching</strong>: We store fetched definitions (in <code>urban_data.json</code>) to avoid repeated calls to the API and speed up subsequent searches.</p>
+      <p><strong>3. Splitting Queries by “or”</strong>: We added a feature where the user can get multiple definitions in one query by adding “or” between each query. For example: <code>harry potter or john snow</code>.  
+      If the user does not add “or,” we treat the entire line as a single query. This approach allows bulk fetching of definitions in a single pass.</p>
+      <p><strong>4. Custom Ranking Logic</strong>: Instead of a traditional TF-IDF or other ranking systems, we implemented a custom ranking formula:
+      <code>score = (likes - dislikes) - 0.1 x (current_year - year_of_post)</code>.</p>
+      <p><strong>5. Search for New Slangs</strong>: We can use an API to return 7 random definitions, call the API 10 times to get a total of 70 definitions, then return the newest terms with the highest score to the user.</p>
+      <p><strong>6. Search Using <code>words.txt</code></strong>: If we want to search in bulk, we create a file called <code>words.txt</code>. Each line may contain a query. The code reads the file line by line, fetches definitions for each query, and caches them.</p>
+    </div>
+  </section>
+
+  <!-- B. How Long Did Queries Run? -->
+  <section id="sectionB">
+    <h2>B. How Long Did Your Queries Run, What Does It Depend On, and Can It Be Improved?</h2>
+    <div class="answer-block">
+      <p><strong>Measured Time (25 seconds)</strong>: Our queries took around 25 seconds to process all lines in <code>words.txt</code>.</p>
+      <p><strong>Dependencies</strong>:
+        <ul>
+          <li><strong>Number of Terms</strong>: If <code>words.txt</code> has many lines or if each line has multiple sub-queries split by “or,” each sub-query must be fetched individually from Urban Dictionary.</li>
+          <li><strong>Network Connection</strong>: Each request to the Urban Dictionary API depends on network speed and the API response time.</li>
+          <li><strong>Caching</strong>: Once a term is cached in <code>urban_data.json</code>, subsequent searches for the same term are instant. If no data is cached, we make more calls to the API.</li>
+        </ul>
+      </p>
+      <p><strong>Possible Improvements</strong>:
+        <ul>
+          <li><strong>Multithreading or Async</strong>: In Python, we could parallelize or asynchronously perform requests to the API.</li>
+          <li><strong>Faster Compiled Language</strong>: C++ might marginally improve local text processing speed, though for network tasks, concurrency often helps more than switching languages.</li>
+          <li><strong>Reducing or Batching API Calls</strong>: If the API supported multi-term queries in a single request, we could reduce overhead. Currently, that’s not publicly available for Urban Dictionary.</li>
+        </ul>
+      </p>
+    </div>
+  </section>
+
+  <!-- Additional Explanation: How The Search Engine Works -->
+  <section>
+    <h2>Additional Explanation: How Our Search Engine for Urban Dictionary Works</h2>
+    <div class="answer-block">
+      <p>1. <strong>Reading Input (<code>words.txt</code>)</strong>: We read each line from <code>words.txt</code>. Each line may contain multiple sub-queries delimited by “or.”  
+      If there is no “or,” it's just one query; if it has “or,” we split it into multiple sub-queries.</p>
+      <p>2. <strong>Cleaning & Normalizing Queries</strong>: We strip leading/trailing whitespace and remove double spaces.</p>
+      <p>3. <strong>Caching / Lookups (<code>urban_data.json</code>)</strong>: For each sub-query (e.g., “john snow,” “harry potter”), we check if it exists in the JSON cache.  
+      If not cached, we fetch from the Urban Dictionary API, process the definitions (calculating the custom score, censoring any bad words), and store them in the JSON file for future use.</p>
+      <p>4. <strong>Selecting Final Definitions</strong>: For each sub-query, we identify the top 10 highest-ranked definitions based on our custom formula.</p>
+      <p>5. <strong>User Prompt / Interactive Query</strong>: After processing <code>words.txt</code>, the program prompts the user for a new query. The same steps apply—split by “or,” check cache or fetch from API, then display the oldest/newest/highest-scoring definitions.</p>
+    </div>
+  </section>
+
+  <!-- C. Hubs and Authorities -->
+  <section id="sectionC">
+    <h2>C. Are There Hubs? Permissions? Give Reasons</h2>
+    <div class="answer-block">
+      <p><strong>Hubs and Authorities Concept</strong>:
+        <br>Yes, in principle each definition text can contain multiple <code>[linked_term]</code> references to other pages. If a particular definition references many other terms, that definition is a potential <em>hub</em>. A definition that many other pages link to (mention with <code>[square bracket]</code> references) could be considered an <em>authority</em>.</p>
+      <p><strong>Example</strong>:  
+        “harry potter (oldest definition)” references <code>[wizard]</code>, <code>[magic]</code>, <code>[hogwarts]</code>. So it's a potential hub. If “wizard,” “magic,” “hogwarts,” “voldemort,” etc. also contain references back to “harry potter,” then “harry potter” becomes a strong authority.
+      </p>
+    </div>
+  </section>
+
+  <!-- D. PageRank Calculation -->
+  <section id="sectionD">
+    <h2>D. Select 10 Pages & Calculate Their PageRank</h2>
+    <div class="answer-block">
+      <p>We did not use every definition for PageRank because it was not feasible. Instead, we took the <strong>words</strong> themselves that the user requested, plus the words <strong>linked inside</strong> each definition, forming a mini-graph of 10 interconnected nodes.</p>
+      <p>Below is an <strong>example graph</strong> showing how the user input “lol” expanded into various linked words:</p>
+      <!-- Placeholder for your diagram screenshot -->
+      <p><img src="Picture1.png" alt="Page Graph from 'lol' to other words" /></p>
+
+      <p>After running our PageRank script for <strong>3 iterations</strong>, these were the results:</p>
+      <pre>
+PageRank values after iteration 3:
+----------------------------------
+Word             |  PageRank Value
+----------------------------------
+too serious      |  0.4446
+Too Serious      |  0.2927
+in real life     |  0.0830
+irl              |  0.0394
+partnership      |  0.0394
+worthwhile       |  0.0211
+lawl             |  0.0211
+trace            |  0.0211
+lolol            |  0.0211
+lol              |  0.0167
+      </pre>
+      <p>We limited the code to only 10 words. You can see how “too serious” has the highest PageRank value due to the link structure in our example data.</p>
+    </div>
+  </section>
+
+  <!-- E. Show Two Different Users the Ranking & Gather Feedback -->
+  <section id="sectionE">
+    <h2>E. Two Different Users' Ranking Feedback & Relevance</h2>
+    <div class="answer-block">
+      <p>We displayed the top 10 definitions (returned by the API) to two users, asking them to mark each definition as relevant (<code>y</code>) or not relevant (<code>n</code>), and recorded precision/recall.</p>
+
+      <p><strong>User 1 Feedback</strong>:</p>
+      <!-- Placeholder for user 1 screenshot if desired -->
+      <pre>
+=== Relevance Feedback ===
+For each definition, enter 'y' if relevant, 'n' if not relevant.
+Is definition #1 relevant? (y/n): y
+Is definition #2 relevant? (y/n): y
+Is definition #3 relevant? (y/n): y
+Is definition #4 relevant? (y/n): n
+Is definition #5 relevant? (y/n): n
+Is definition #6 relevant? (y/n): n
+Is definition #7 relevant? (y/n): y
+Is definition #8 relevant? (y/n): n
+Is definition #9 relevant? (y/n): n
+Is definition #10 relevant? (y/n): n
+
+=== Evaluation Metrics ===
+User 1 - Precision: 0.40, Recall: 1.00
+      </pre>
+
+      <p><strong>User 2 Feedback</strong>:</p>
+      <img src="Picture2.png">
+      <pre>
+=== Relevance Feedback ===
+Is definition #1 relevant? (y/n): y
+Is definition #2 relevant? (y/n): n
+Is definition #3 relevant? (y/n): y
+Is definition #4 relevant? (y/n): y
+Is definition #5 relevant? (y/n): n
+Is definition #6 relevant? (y/n): n
+Is definition #7 relevant? (y/n): y
+Is definition #8 relevant? (y/n): y
+Is definition #9 relevant? (y/n): n
+Is definition #10 relevant? (y/n): y
+
+=== Evaluation Metrics ===
+User 2 - Precision: 0.60, Recall: 1.00
+      </pre>
+
+      <p><strong>Observations</strong>:
+        <ul>
+          <li>We showed the top 10 definitions, but the API returns all definitions in practice. Hence, recall is effectively 100% because we are not discarding definitions, just ranking them.</li>
+          <li>Since our site is essentially a dictionary, we assume the user typed the correct query. We do not suggest modifying the user’s query (like adding synonyms or related terms). So, we do not propose an adjusted query.</li>
+        </ul>
+      </p>
+    </div>
+  </section>
+
+</body>
+</html>
