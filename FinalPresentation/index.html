@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Urban Dictionary Project</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #2563eb;
+        --secondary: #7c3aed;
+        --accent: #f59e0b;
+        --light: #f8fafc;
+        --dark: #1e293b;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Heebo", sans-serif;
+        background: linear-gradient(45deg, #f8fafc, #f1f5f9);
+        color: var(--dark);
+        line-height: 1.7;
+        overflow-x: hidden;
+      }
+
+      /* Animated header */
+      header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        padding: 1rem 1rem;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        animation: headerSlide 1s ease;
+      }
+
+      header h1 {
+        font-weight: 700;
+        font-size: 2.5rem;
+        color: var(--light);
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      header p {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      /* Modern navigation */
+      nav {
+        margin-top: 1.5rem;
+        position: sticky;
+        top: 130px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 1rem;
+        border-radius: 50px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        max-width: 90%;
+        margin: 1.5rem auto;
+        backdrop-filter: blur(10px);
+      }
+
+      nav a {
+        text-decoration: none;
+        color: var(--dark);
+        margin: 0 1rem;
+        padding: 0.5rem 1.5rem;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+      }
+
+      nav a::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--accent);
+        transition: width 0.3s ease;
+      }
+
+      nav a:hover {
+        color: var(--primary);
+      }
+
+      nav a:hover::before {
+        width: 100%;
+      }
+
+      /* Enhanced sections */
+      main {
+        max-width: 1200px;
+        margin: 3rem auto;
+        padding: 0 2rem;
+      }
+
+      section.question {
+        background: white;
+        border-radius: 15px;
+        margin-bottom: 3rem;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        opacity: 0;
+        transform: translateY(50px) rotateX(30deg);
+        transition: 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        perspective: 1000px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      section.question.show {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+      }
+
+      section.question h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+        padding-bottom: 1rem;
+        border-bottom: 3px solid var(--accent);
+        position: relative;
+      }
+
+      section.question h2::after {
+        content: "";
+        position: absolute;
+        bottom: -3px;
+        right: 0;
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent), transparent);
+      }
+
+      .tfidf-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+      }
+
+      .tfidf-table th {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 1.2rem;
+        font-weight: 500;
+        text-align: center;
+        position: sticky;
+        top: 0;
+      }
+
+      .tfidf-table td {
+        padding: 1rem;
+        text-align: center;
+        border-bottom: 1px solid #f1f5f9;
+        font-family: "Courier New", monospace;
+      }
+
+      .tfidf-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .tfidf-table tr:nth-child(even) {
+        background-color: #f8fafc;
+      }
+
+      .tfidf-table tr:hover {
+        background-color: #f1f5f9;
+        transform: scale(1.02);
+        transition: transform 0.2s ease;
+      }
+
+      .table-container h3 {
+        color: var(--dark);
+        margin-bottom: 1rem;
+        font-size: 1.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .table-container h3::before {
+        content: "";
+        display: block;
+        width: 8px;
+        height: 1.4em;
+        background: var(--accent);
+        border-radius: 4px;
+      }
+
+      .continuation td {
+        padding: 0.5rem;
+        background: #f8fafc;
+        text-align: center;
+      }
+
+      .ellipsis {
+        color: #94a3b8;
+        animation: pulse 1.5s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .table-wrapper {
+          overflow-x: auto;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tfidf-table {
+          min-width: 600px;
+        }
+      }
+
+      /* Enhanced tables */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 2rem 0;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: right;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      th {
+        background: var(--primary);
+        color: white;
+        font-weight: 500;
+      }
+
+      tr:hover {
+        background: #f8fafc;
+      }
+
+      /* Code blocks */
+      pre {
+        background: var(--dark);
+        color: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 1.5rem 0;
+        overflow-x: auto;
+        font-family: "Courier New", monospace;
+        position: relative;
+      }
+
+      pre::before {
+        content: "Code";
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: var(--accent);
+        color: white;
+        padding: 0.2rem 1rem;
+        font-size: 0.8rem;
+        border-radius: 0 0 5px 0;
+      }
+
+      /* Progress bar */
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 3px;
+        background: var(--accent);
+        z-index: 1001;
+        transition: width 0.3s ease;
+      }
+
+      .term-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      /* Term Card Styling */
+      .term-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .term-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .term-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--accent);
+      }
+
+      .term-name {
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.2rem;
+      }
+
+      .term-frequency {
+        background: var(--accent);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+      }
+
+      .term-section {
+        margin-bottom: 1rem;
+      }
+
+      .term-section label {
+        display: block;
+        color: var(--dark);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+
+      .doc-indices {
+        background: var(--light);
+        padding: 0.8rem;
+        border-radius: 8px;
+        max-height: 120px;
+        overflow-y: auto;
+        font-family: "Courier New", monospace;
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+
+      .original-forms {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .form-tag {
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--primary);
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        border: 1px solid rgba(37, 99, 235, 0.2);
+      }
+
+      /* Scrollbar Styling */
+      .doc-indices::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .doc-indices::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      .doc-indices::-webkit-scrollbar-thumb {
+        background: var(--accent);
+        border-radius: 4px;
+      }
+
+      .term-json-display {
+        font-family: Arial, sans-serif;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 16px 0;
+        background-color: #f9f9f9;
+      }
+
+      .term-json-display h3 {
+        margin-top: 0;
+        color: #333;
+      }
+
+      .json-content {
+        margin-top: 12px;
+      }
+
+      .json-key {
+        margin-bottom: 8px;
+      }
+
+      .json-value {
+        color: #555;
+        font-weight: bold;
+      }
+
+      .json-details {
+        margin-left: 16px;
+      }
+
+      .json-documents,
+      .json-forms {
+        margin: 8px 0 0 16px;
+        padding-left: 16px;
+        list-style: disc;
+        color: #555;
+      }
+
+      .json-subkey {
+        margin-bottom: 12px;
+      }
+
+      @media (max-width: 768px) {
+        .term-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .term-card {
+          padding: 1rem;
+        }
+      }
+
+      @keyframes headerSlide {
+        from {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        header {
+          padding: 2rem 1rem;
+        }
+
+        nav a {
+          margin: 0 0.5rem;
+          padding: 0.5rem 1rem;
+          font-size: 0.9rem;
+        }
+
+        section.question {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <header>
+      <h1>פרויקט Urban Dictionary</h1>
+      <p>דוגמה לאתר שמכיל את כל המידע והתשובות שנתת</p>
+      <nav>
+        <!-- Quick links to each question -->
+        <a href="#q1">שאלה 1</a>| <a href="#q2">שאלה 2</a>|
+        <a href="#q3">שאלה 3</a>| <a href="#q4">שאלה 4</a>|
+        <a href="#q5">שאלה 5</a>| <a href="#q6">שאלה 6</a>|
+        <a href="#q7">שאלה 7</a>| <a href="#q8">שאלה 8</a>|
+        <a href="#q9">שאלה 9</a>|
+        <a href="#q10">שאלה 10</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Question 1 -->
+      <section class="question" id="q1">
+        <h2>שאלה 1</h2>
+        <p>
+          בחרנו להתמקד באתר Urban Dictionary שהוא מילון אינטרנטי שמסביר מילים,
+          סלנגים וביטויים שאנשים משתמשים בהם בחיי היומיום ובאינטרנט. אפשר למצוא
+          שם מונחים שאינם נמצאים במילונים רגילים, כמו מילים מצחיקות, כינויים, או
+          ביטויים נפוצים באינטרנט. אנשים יכולים להוסיף הסברים משלהם למילים,
+          לכתוב דוגמאות איך משתמשים בהן, וגם להצביע אם הם אוהבים את ההגדרה או
+          לא. האתר מתאים במיוחד לאנשים שרוצים להבין ביטויים או מונחים פופולריים
+          בתרבות היום-יום.
+        </p>
+        <p>
+          הקישור לאתר:
+          <a href="https://www.urbandictionary.com/" target="_blank"
+            >https://www.urbandictionary.com/</a
+          >
+        </p>
+      </section>
+
+      <!-- Question 2 -->
+      <section class="question" id="q2">
+        <h2>שאלה 2</h2>
+        <p>
+          <strong>Query 1:</strong> lmao "or" can't<br />
+          תוצאה: מצטערים, לא מצאנו: lmao "or" can't<br />
+          מידע נדרש: הגדרה של "lmao” או “can't".<br />
+          חיפושים מתקדמים הם בעיה באתר הזה.
+        </p>
+        <p>
+          <strong>Query 2:</strong> What slang words from the early 2000s are
+          still commonly used today?<br />
+          תוצאה: מצטערים, לא מצאנו: אילו מילים סלנג משנות ה-2000 עדיין בשימוש
+          נפוץ היום?<br />
+          מידע נדרש:<br />
+          רשימה של מילות סלנג פופולריות משנות ה-2000 עם סטטיסטיקות שימוש
+          עדכניות.<br />
+          דוגמאות למילים אלו בתקשורת מודרנית או בשיחות.<br />
+          תובנות לגבי למה מילים מסוימות נמשכו בעוד אחרות נעלמו.
+        </p>
+        <p>
+          <strong>Query 3:</strong> newest slang<br />
+          תוצאה: הגדרה מילולית של “סלנג החדש ביותר”<br />
+          מידע נדרש:<br />
+          רשימה של מילים סלנג שהיו שיוצרו לאחרונה (בשנה האחרונה).<br />
+          הגדרות ודוגמאות כיצד הן משמשות בשיחות.
+        </p>
+      </section>
+
+      <!-- Question 3 -->
+      <section class="question" id="q3">
+        <h2>שאלה 3</h2>
+        <p>
+          <a
+            href="https://colab.research.google.com/drive/1TeyT44cEsJmIm4XTSvmia1N69QX6pKg8?usp=sharing"
+            target="_blank"
+          >
+            https://colab.research.google.com/drive/1TeyT44cEsJmIm4XTSvmia1N69QX6pKg8?usp=sharing
+          </a>
+        </p>
+      </section>
+
+      <!-- Question 4 -->
+      <section class="question" id="q4">
+        <h2>שאלה 4</h2>
+        <p>
+          <strong>Urban Dictionary API:</strong><br />
+          אנו שולפים נתונים מ-API של Urban Dictionary, ואז מפענחים את התוצאות
+          ב-JSON על מנת להוסיף אותן ל-cache המקומי שלנו.
+        </p>
+        <p>
+          <strong>JSON Caching:</strong><br />
+          אנו שומרים את ה-definitions שנשלפו בקובץ urban_data.json על מנת למנוע
+          קריאות חוזרות ל-API - ולזרז חיפושים עתידיים.
+        </p>
+        <p>
+          <strong>splitting queries by "or":</strong><br />
+          הוספנו תכונה שבה המשתמש יכול לקבל definitions מרובות בשאילתה אחת על
+          ידי הוספת "או" בין כל שאילתה, לדוגמה: harry potter "or" john snow .<br />
+          אנו נבצע חיפוש עבור "harry potter" ולאחר מכן עבור "john snow". אם
+          המשתמש לא הוסיף "או", נבצע חיפוש על כל השאילתה.
+        </p>
+        <p>
+          <strong>Custom Ranking Logic:</strong><br />
+          במקום להשתמש בשיטות דירוג מסורתיות כמו TF-IDF, יישמנו נוסחת דירוג
+          מותאמת אישית:<br />
+          <code
+            >score = (likes - dislikes) - 0.1 × (current_year -
+            year_of_post)</code
+          >
+        </p>
+        <p>
+          <strong>Search for New Slangs:</strong><br />
+          אנו יכולים להשתמש ב-API על מנת להחזיר 7 הגדרות רנדומליות, ואז נשתמש
+          ב-API עשר פעמים כדי לקבל סך הכל 70 הגדרות, ולאחר מכן נוכל להחזיר את
+          המונחים החדשים (שנתיים אחרונות) עם הדירוג הגבוה ביותר למשתמש.
+        </p>
+        <p>
+          <strong>Search using words.txt:</strong><br />
+          אם אנו רוצים לבצע חיפוש בכמות גדולה, אנו יוצרים קובץ בשם words.txt ואז
+          בכל שורה כותבים query. לאחר מכן הקוד יעבור על כל שורה ויביא
+          definitions עבור כל query בקובץ.
+        </p>
+      </section>
+
+      <!-- Question 5 -->
+      <section class="question" id="q5">
+        <h2>שאלה 5</h2>
+        <p>זמן נמדד (25 שניות) לעיבוד כל השאילתות בקובץ words.txt.</p>
+        <p>
+          <strong>על מה זה תלוי:</strong><br />
+          מספר מונחים: אם קובץ words.txt מכיל שורות רבות או תתי-שאילתות מופרדות
+          ב-"or", כל אחת מהן חייבת להוציא מה-Urban Dictionary.<br />
+          זמן עיבוד תלוי גם בחיבור הרשת, כי כל בקשה ל-API של Urban Dictionary
+          תלויה במהירות הרשת ובזמן התגובה של ה-API.<br />
+          תלוי גם בזיכרון מטמון: ברגע שמונח נמצא בזיכרון מטמון בקובץ
+          urban_data.json, זה יהיה מיידי בפעם הבאה. ללא נתונים במטמון - יותר
+          קריאות יתקיימו ל-API.
+        </p>
+        <p>
+          <strong>האם אפשר לשפר זאת?</strong><br />
+          כן, אפשר להשתמש בריבוי תהליכים ב-Python כדי להאיץ את הבקשות ל-API.<br />
+          בנוסף, שפה מהירה יותר כמו C++ עשויה לעזור בעיבוד הטקסט, אך בדרך כלל
+          למשימות רשת מקביליות עוזרת יותר מאשר שינוי שפה.<br />
+          הפחתת קריאות ה-API גם עוזרת (למשל, אם ה-API היה תומך בשאילתות מרובות
+          בבקשה אחת).
+        </p>
+      </section>
+
+      <!-- Question 6 -->
+      <section class="question" id="q6">
+        <h2>שאלה 6</h2>
+        <div class="term-json-display">
+          <h3>Term Details: "use"</h3>
+          <div class="json-content">
+            <div class="json-key">
+              <strong>Term:</strong> <span class="json-value">use</span>
+            </div>
+            <div class="json-key">
+              <strong>Frequency:</strong> <span class="json-value">29</span>
+            </div>
+            <div class="json-key">
+              <strong>Details:</strong>
+              <div class="json-details">
+                <div class="json-subkey">
+                  <strong>Documents:</strong>
+                  <ul class="json-documents">
+                    <li>1</li>
+                    <li>6</li>
+                    <li>16</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>29</li>
+                    <li>34</li>
+                    <li>37</li>
+                    <li>38</li>
+                    <li>39</li>
+                    <li>46</li>
+                    <li>48</li>
+                    <li>51</li>
+                    <li>53</li>
+                    <li>61</li>
+                    <li>65</li>
+                    <li>70</li>
+                    <li>74</li>
+                    <li>83</li>
+                    <li>91</li>
+                  </ul>
+                </div>
+                <div class="json-subkey">
+                  <strong>Forms:</strong>
+                  <ul class="json-forms">
+                    <li>using</li>
+                    <li>uses</li>
+                    <li>used</li>
+                    <li>use</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="term-grid">
+          <!-- Term Card -->
+          <div class="term-card">
+            <div class="term-header">
+              <span class="term-name">use</span>
+              <span class="term-frequency">29</span>
+            </div>
+            <div class="term-details">
+              <div class="term-section">
+                <label>מסמכים:</label>
+                <div class="doc-indices">
+                  1, 6, 16, 26, 27, 29, 34, 37, 38, 39, 46, 48, 51, 53, 61, 65,
+                  70, 74, 83, 91
+                </div>
+              </div>
+              <div class="term-section">
+                <label>צורות:</label>
+                <div class="original-forms">
+                  <span class="form-tag">using</span>
+                  <span class="form-tag">uses</span>
+                  <span class="form-tag">used</span>
+                  <span class="form-tag">use</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Term Card -->
+          <div class="term-card">
+            <div class="term-header">
+              <span class="term-name">hash</span>
+              <span class="term-frequency">18</span>
+            </div>
+            <div class="term-details">
+              <div class="term-section">
+                <label>מסמכים:</label>
+                <div class="doc-indices">31, 33, 34, 36, 37, 38, 39</div>
+              </div>
+              <div class="term-section">
+                <label>צורות:</label>
+                <div class="original-forms">
+                  <span class="form-tag">hash</span>
+                  <span class="form-tag">hashes</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Term Card -->
+          <div class="term-card">
+            <div class="term-header">
+              <span class="term-name">someth</span>
+              <span class="term-frequency">17</span>
+            </div>
+            <div class="term-details">
+              <div class="term-section">
+                <label>מסמכים:</label>
+                <div class="doc-indices">
+                  0, 3, 4, 6, 7, 8, 26, 28, 39, 44, 46, 56, 89
+                </div>
+              </div>
+              <div class="term-section">
+                <label>צורות:</label>
+                <div class="original-forms">
+                  <span class="form-tag">something</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Term Card -->
+          <div class="term-card">
+            <div class="term-header">
+              <span class="term-name">word</span>
+              <span class="term-frequency">17</span>
+            </div>
+            <div class="term-details">
+              <div class="term-section">
+                <label>מסמכים:</label>
+                <div class="doc-indices">
+                  1, 6, 25, 39, 44, 46, 85, 91, 94, 95
+                </div>
+              </div>
+              <div class="term-section">
+                <label>צורות:</label>
+                <div class="original-forms">
+                  <span class="form-tag">words</span>
+                  <span class="form-tag">word</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Term Card -->
+          <div class="term-card">
+            <div class="term-header">
+              <span class="term-name">one</span>
+              <span class="term-frequency">16</span>
+            </div>
+            <div class="term-details">
+              <div class="term-section">
+                <label>מסמכים:</label>
+                <div class="doc-indices">
+                  4, 5, 21, 24, 27, 34, 42, 74, 75, 81, 82, 85, 94
+                </div>
+              </div>
+              <div class="term-section">
+                <label>צורות:</label>
+                <div class="original-forms">
+                  <span class="form-tag">one</span>
+                  <span class="form-tag">ones</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Term Card -->
+          <div class="term-card">
+            <div class="term-header">
+              <span class="term-name">cannabi</span>
+              <span class="term-frequency">15</span>
+            </div>
+            <div class="term-details">
+              <div class="term-section">
+                <label>מסמכים:</label>
+                <div class="doc-indices">33, 36, 37</div>
+              </div>
+              <div class="term-section">
+                <label>צורות:</label>
+                <div class="original-forms">
+                  <span class="form-tag">cannabis</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Term Card -->
+          <div class="term-card">
+            <div class="term-header">
+              <span class="term-name">like</span>
+              <span class="term-frequency">14</span>
+            </div>
+            <div class="term-details">
+              <div class="term-section">
+                <label>מסמכים:</label>
+                <div class="doc-indices">1, 18, 25, 36, 52, 56, 57, 58, 91</div>
+              </div>
+              <div class="term-section">
+                <label>צורות:</label>
+                <div class="original-forms">
+                  <span class="form-tag">like</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Term Card -->
+          <div class="term-card">
+            <div class="term-header">
+              <span class="term-name">edg</span>
+              <span class="term-frequency">13</span>
+            </div>
+            <div class="term-details">
+              <div class="term-section">
+                <label>מסמכים:</label>
+                <div class="doc-indices">20, 26, 27, 29, 44</div>
+              </div>
+              <div class="term-section">
+                <label>צורות:</label>
+                <div class="original-forms">
+                  <span class="form-tag">edge</span>
+                  <span class="form-tag">edging</span>
+                  <span class="form-tag">edges</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Term Card -->
+          <div class="term-card">
+            <div class="term-header">
+              <span class="term-name">also</span>
+              <span class="term-frequency">12</span>
+            </div>
+            <div class="term-details">
+              <div class="term-section">
+                <label>מסמכים:</label>
+                <div class="doc-indices">8, 29, 33, 36, 56, 57, 91</div>
+              </div>
+              <div class="term-section">
+                <label>צורות:</label>
+                <div class="original-forms">
+                  <span class="form-tag">also</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Question 7 -->
+      <section class="question" id="q7">
+        <h2>שאלה 7</h2>
+        <div class="table-container">
+          <h3>חישוב TF-IDF עבור השאילתה 'quantum'</h3>
+          <div class="table-wrapper">
+            <table class="tfidf-table">
+              <thead>
+                <tr>
+                  <th>Term</th>
+                  <th>Doc ID</th>
+                  <th>TF</th>
+                  <th>DF</th>
+                  <th>IDF</th>
+                  <th>TF-IDF</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>quantum</td>
+                  <td>0</td>
+                  <td>1.000000</td>
+                  <td>3</td>
+                  <td>3.188417</td>
+                  <td>3.188417</td>
+                </tr>
+                <tr>
+                  <td>quantum</td>
+                  <td>1</td>
+                  <td>0.000000</td>
+                  <td>3</td>
+                  <td>3.188417</td>
+                  <td>0.000000</td>
+                </tr>
+                <tr>
+                  <td>quantum</td>
+                  <td>2</td>
+                  <td>2.098612</td>
+                  <td>3</td>
+                  <td>3.188417</td>
+                  <td>6.691250</td>
+                </tr>
+                <tr>
+                  <td>quantum</td>
+                  <td>3</td>
+                  <td>0.000000</td>
+                  <td>3</td>
+                  <td>3.188417</td>
+                  <td>0.000000</td>
+                </tr>
+                <tr class="continuation">
+                  <td colspan="6">
+                    <svg
+                      class="ellipsis"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                    >
+                      <circle cx="4" cy="12" r="2" fill="currentColor" />
+                      <circle cx="12" cy="12" r="2" fill="currentColor" />
+                      <circle cx="20" cy="12" r="2" fill="currentColor" />
+                    </svg>
+                  </td>
+                </tr>
+                <tr>
+                  <td>quantum</td>
+                  <td>96</td>
+                  <td>0.000000</td>
+                  <td>3</td>
+                  <td>3.188417</td>
+                  <td>0.000000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Question 8 -->
+      <section class="question" id="q8">
+        <h2>שאלה 8</h2>
+        <p>
+          כן, בעיקרון, כל טקסט הגדרה יכול להכיל מספר הפניות [linked_term] לדפים
+          אחרים.<br />
+          אם הגדרה מסוימת מתייחסת להרבה מונחים אחרים, ההגדרה הזאת יכולה להיחשב
+          כחיבור פוטנציאלי.<br />
+          הגדרה שאליה הרבה דפים אחרים מקשרים (מזכירים עם הפניות [סוגריים
+          מרובעים]) יכולה להיחשב כרשות (authority).
+        </p>
+        <p>
+          דוגמה:<br />
+          אם “הארי פוטר (הגדרה הכי ישנה)” מתייחסת ל-[מכשף], [קסם], [הוגוורטס],
+          זה hub פוטנציאלי.<br />
+          אם מספר הגדרות מ-“מכשף,” “קסם,” “הוגוורטס,” “וולדמורט” מקשרות חזרה
+          ל-“הארי פוטר,” אז “הארי פוטר” עשוי להיות authority חזקה.
+        </p>
+      </section>
+
+      <!-- Question 9 -->
+      <section class="question" id="q9">
+        <h2>שאלה 9</h2>
+        <p>
+          הערה חשובה היא שלא השתמשנו בהגדרות שהוחזרו לצורך חישוב ה-PageRank כי
+          זה בלתי אפשרי ולא מתאים לדרישות. במקום זאת, השתמשנו במילה שהמשתמש ביקש
+          לחפש (למשל “lol”) כדי להרחיב למילים נוספות המקשרות בתוך התיאור של
+          המילה שחיפשנו. זו המבנה של המילים:
+        </p>
+        <img src="questionNine.png" />
+        <p>
+          הסיבה שהמבנה נראה כך היא כי לקחנו מילה מהקלט של המשתמש שהיא “lol”
+          והרחבנו אותה להגדרות שונות, לכן זה נראה כמו קו ישר. בנוסף, הגבלנו את
+          הקוד לחפש רק 10 מילים שמקשרות אחת לשנייה.
+        </p>
+        <p>להלן טבלת ה-PageRank לאחר 3 איטרציות (כדוגמת התמונה שסיפקת):</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Word</th>
+              <th>PageRank Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>too serious</td>
+              <td>0.4446</td>
+            </tr>
+            <tr>
+              <td>Too Serious</td>
+              <td>0.2927</td>
+            </tr>
+            <tr>
+              <td>in real life</td>
+              <td>0.0830</td>
+            </tr>
+            <tr>
+              <td>irl</td>
+              <td>0.0394</td>
+            </tr>
+            <tr>
+              <td>partnership</td>
+              <td>0.0394</td>
+            </tr>
+            <tr>
+              <td>worthwhile</td>
+              <td>0.0211</td>
+            </tr>
+            <tr>
+              <td>lawl</td>
+              <td>0.0211</td>
+            </tr>
+            <tr>
+              <td>trace</td>
+              <td>0.0211</td>
+            </tr>
+            <tr>
+              <td>lolol</td>
+              <td>0.0211</td>
+            </tr>
+            <tr>
+              <td>lol</td>
+              <td>0.0167</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <img src="questionNinePartTwo.png" alt="" />
+      </section>
+
+      <!-- Question 10 -->
+      <section class="question" id="q10">
+        <h2>שאלה 10</h2>
+        <p>
+          אנחנו לא יכולים לחשב Recall כי אנחנו משתמשים ב-API שמחזיר את כל
+          ההגדרות הרלוונטיות, ולכן אנחנו מחזירים את כל ההגדרות, אך מציגים רק את
+          10 ההגדרות המובילות באמצעות מערכת הניקוד שלנו. למרות שאנחנו מציגים רק
+          את 10 המובילות, בפועל אנחנו מחזירים את כל ההגדרות, ולכן זה 100%.
+          בנוסף, אנחנו לא יכולים להציע שאילתה מתוקנת בגלל שהאתר שלנו הוא אתר
+          מילון, ולכן אנחנו מניחים שהמשתמש הזין את השאילתה הנכונה ולא יכולים
+          לשנות אותה.
+        </p>
+
+        <h3>=== Relevance Feedback and Evaluation ===</h3>
+        <p><strong>User 1 feedback:</strong></p>
+        <pre>
+  === Relevance Feedback ===
+  For each definition, enter 'y' if relevant, 'n' if not relevant.
+  Is definition #1 relevant? (y/n): y
+  Is definition #2 relevant? (y/n): y
+  Is definition #3 relevant? (y/n): y
+  Is definition #4 relevant? (y/n): n
+  Is definition #5 relevant? (y/n): n
+  Is definition #6 relevant? (y/n): n
+  Is definition #7 relevant? (y/n): y
+  Is definition #8 relevant? (y/n): n
+  Is definition #9 relevant? (y/n): n
+  Is definition #10 relevant? (y/n): n
+      </pre
+        >
+
+        <p><strong>User 2 feedback:</strong></p>
+        <pre>
+  === Relevance Feedback ===
+  For each definition, enter 'y' if relevant, 'n' if not relevant.
+  Is definition #1 relevant? (y/n): y
+  Is definition #2 relevant? (y/n): n
+  Is definition #3 relevant? (y/n): y
+  Is definition #4 relevant? (y/n): y
+  Is definition #5 relevant? (y/n): n
+  Is definition #6 relevant? (y/n): n
+  Is definition #7 relevant? (y/n): y
+  Is definition #8 relevant? (y/n): y
+  Is definition #9 relevant? (y/n): n
+  Is definition #10 relevant? (y/n): y
+  
+  === Evaluation Metrics ===
+  User 1 - Precision: 0.40, Recall: 1.00
+  User 2 - Precision: 0.60, Recall: 1.00
+      </pre
+        >
+        <img src="QuestionTen.png" />
+      </section>
+
+      <section>
+        <h1 style="text-align: center; font-size: xxx-large">Thank You!</h1>
+      </section>
+    </main>
+
+    <script>
+      // Enhanced scroll reveal with Intersection Observer
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("show");
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      document.querySelectorAll(".question").forEach((el) => {
+        observer.observe(el);
+      });
+
+      // Progress bar
+      window.addEventListener("scroll", () => {
+        const winScroll =
+          document.body.scrollTop || document.documentElement.scrollTop;
+        const height =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById("progressBar").style.width = scrolled + "%";
+      });
+
+      // Copy code button
+      document.querySelectorAll("pre").forEach((pre) => {
+        const button = document.createElement("button");
+        button.innerHTML = "העתק";
+        button.style.position = "absolute";
+        button.style.top = "0";
+        button.style.left = "0";
+        button.style.background = "var(--primary)";
+        button.style.color = "white";
+        button.style.border = "none";
+        button.style.padding = "0.3rem 1rem";
+        button.style.cursor = "pointer";
+        button.style.borderRadius = "0 0 5px 5px";
+        button.addEventListener("click", () => {
+          navigator.clipboard.writeText(pre.textContent);
+          button.innerHTML = "הועתק!";
+          setTimeout(() => (button.innerHTML = "העתק"), 2000);
+        });
+        pre.appendChild(button);
+      });
+    </script>
+  </body>
+</html>
